@@ -12,16 +12,24 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+import django_heroku
+import dj_database_url
+from decouple import config,Csv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ('SECRET_KEY')
+SECRET_KEY = 'django-insecure-sxvmu$r3m42ia)^$aw@pwjq!*_a%$%#nicl-)*6-0yt!t%4ykr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,20 +82,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'photobay.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+
+# development
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'photobay',
-        'USER': 'suleiman',
-        'PASSWORD': 'db_password',
-        
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': '',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -132,7 +141,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+cloudinary.config(
+    cloud_name = 'dfepx4zib',
+    api_key = '874626613369166',
+    api_secret = 'piT1NX4i7CXZ0Zaf0rJqyW4vUGI',
+)
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+django_heroku.settings(locals())
